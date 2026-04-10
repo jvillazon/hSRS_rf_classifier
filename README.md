@@ -103,7 +103,7 @@ Outputs are saved alongside your images:
 
 ```bash
 python training/sk_train.py
-# → Saves model to: models/rf_best_model_cos_sim.joblib
+# → Saves model to: models/*.joblib
 ```
 
 To regenerate training datasets from your own molecule spectra:
