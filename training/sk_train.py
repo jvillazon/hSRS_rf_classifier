@@ -39,7 +39,7 @@ def main():
     num_samp = 61
 
     # Model output
-    model_name = 'rf_best_model_cos_sim'
+    model_name = 'rf_best_model' # Rename model name as necessary
     model_save_path = os.path.join(_pkg_dir, 'models', f'{model_name}.joblib')
     # ========================================================================
 
