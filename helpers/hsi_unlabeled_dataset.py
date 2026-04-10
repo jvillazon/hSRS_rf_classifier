@@ -70,10 +70,21 @@ class HSI_Unlabeled_Dataset:
             with tifffile.TiffFile(img_path) as tif:
                 if tif.is_imagej:
                     page = tif.pages[0]
-                    pixel_size_x = 1 / page.resolution[1]
-                    pixel_size_y = 1 / page.resolution[0]
+                    # resolution tag stores (pixels_per_unit_x, pixels_per_unit_y)
+                    # pixel_size = 1 / pixels_per_unit  (in the same physical unit)
+                    pixel_size_x = 1 / page.resolution[1] if page.resolution[1] else 1
+                    pixel_size_y = 1 / page.resolution[0] if page.resolution[0] else 1
+                    # TIFFTAG_RESOLUTIONUNIT: 1=no unit, 2=inch, 3=centimeter
+                    # tifffile exposes it as an integer on TiffPage.tags
+                    tags = {tag.name: tag.value for tag in page.tags.values()}
+                    resolution_unit = tags.get('ResolutionUnit', 2)  # default centimeter
+                    # Store the ImageJ spatial-calibration unit string (e.g. 'um', 'micron')
+                    ij_unit = tif.imagej_metadata.get('unit', '') if tif.imagej_metadata else ''
                 else:
-                    pixel_size_x = pixel_size_y = 1
+                    pixel_size_x = 1
+                    pixel_size_y = 1
+                    resolution_unit = 1  # no unit
+                    ij_unit = 'pixel'
 
             if len(image.shape) >= 2:
                 height = image.shape[-2]
@@ -113,13 +124,15 @@ class HSI_Unlabeled_Dataset:
                         image_max = global_mean + 3 * global_std
 
                 self.image_stats[img_path] = {
-                    'image_min':    image_min,
-                    'image_max':    image_max,
+                    'image_min': image_min,
+                    'image_max': image_max,
                     'pixel_size_x': pixel_size_x,
                     'pixel_size_y': pixel_size_y,
-                    'height':       height,
-                    'width':        width,
-                    'start_idx':    current_size,
+                    'resolution_unit': resolution_unit,  # TIFF ResolutionUnit tag value
+                    'ij_unit': ij_unit,                 # ImageJ spatial-calibration string
+                    'height': height,
+                    'width': width,
+                    'start_idx': current_size
                 }
             else:
                 size = 0

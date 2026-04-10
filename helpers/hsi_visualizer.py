@@ -351,6 +351,16 @@ class HSI_Visualizer:
         else:
             channel_names = [str(c) for c in range(n_classes)]
 
+        # Maintain original image resolution
+        pixel_size_x = stats.get('pixel_size_x', 1)
+        pixel_size_y = stats.get('pixel_size_y', 1)
+        resolution_unit = stats.get('resolution_unit', 1)  # TIFF ResolutionUnit tag int
+        ij_unit = stats.get('ij_unit', 'micron')           # ImageJ unit string
+
+        res_x = (1.0 / pixel_size_x) if pixel_size_x and pixel_size_x != 1 else 1.0
+        res_y = (1.0 / pixel_size_y) if pixel_size_y and pixel_size_y != 1 else 1.0
+
+
         # Save as TIFF with individual page labels
         try:
             # ImageJ format requires writing entire stack at once
@@ -359,12 +369,14 @@ class HSI_Visualizer:
                 output_path,
                 prob_stack.astype(np.float32),
                 imagej=True,
+                resolution=(res_x, res_y),
+                resolutionunit=resolution_unit,
                 metadata={
-                    'axes': 'ZYX',  # Stack as Z slices
-                    'Labels': channel_names,  # List of string labels for each slice
-                    'unit': 'pixel',
-                    'spacing': 1.0,
-                },   
+                    'axes': 'ZYX',       # Stack as Z slices
+                    'Labels': channel_names,
+                    'unit': ij_unit,     # Physical unit string (e.g. 'um', 'micron')
+                    'spacing': pixel_size_y,  # Z spacing reuses Y pixel size
+                },
             )
             
             print(f"Saved probability stack with {n_classes} channels to: {output_path}")
