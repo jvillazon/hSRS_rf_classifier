@@ -60,10 +60,10 @@ def main():
     # ── Random Forest (default) ────────────────────────────────────────────
     print("\nConfiguring Random Forest...")
     rf_model = RandomForestClassifier(
-        n_estimators=150,
-        max_depth=40,
-        min_samples_split=2,
-        min_samples_leaf=9,
+        n_estimators=150, # Optimizable hyperparameter
+        max_depth=40, # Optimizable hyperparameter
+        min_samples_split=2, # Optimizable hyperparameter
+        min_samples_leaf=9, # Optimizable hyperparameter
         random_state=42,
         n_jobs=-1,
     )
@@ -75,7 +75,7 @@ def main():
         verbose=True,
         use_platt=True,
         sam_weighting=True,
-        alpha=9,
+        alpha=9, # Optimizable hyperparameter
     )
 
     print(f"\nTrain accuracy : {metrics['train_accuracy']:.4f}")
