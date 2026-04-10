@@ -1,0 +1,33 @@
+# ============================================================
+# HSI RF Classifier — pip requirements
+# ============================================================
+# Install:
+#   pip install -r requirements.txt
+#
+# PyTorch (CPU):
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#
+# PyTorch (GPU, CUDA 12.1):
+#   pip install torch --index-url https://download.pytorch.org/whl/cu121
+#
+# Or follow https://pytorch.org/get-started/locally/ for your platform.
+# ============================================================
+
+numpy>=1.24
+pandas>=1.5
+matplotlib>=3.6
+scipy>=1.10
+scikit-learn>=1.2
+tqdm>=4.64
+tifffile>=2023.1
+seaborn>=0.12
+statsmodels>=0.13
+joblib>=1.2
+shap>=0.42
+
+# PyTorch — required for HSI_Labeled_Dataset (SAM spectral weighting)
+# Install separately using the command above for your platform.
+torch
+
+# ---- TRAINING EXTRAS (training/sk_train.py) -----------------
+openpyxl>=3.0   # only if using .xlsx molecule files in training/hsi_load_data.py
