@@ -78,7 +78,7 @@ def main():
     )
 
     output_base = os.path.join(
-        os.path.dirname(base_directory), f"{chosen_model_name}_outputs_PACKAGE_test"
+        os.path.dirname(base_directory), f"{chosen_model_name}_outputs" # Output directory for subfolders
     )
     classifier = HSI_Classifier(
         dataset,
